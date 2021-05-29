@@ -53,4 +53,5 @@ OAuth_USER = ''
 Link: http://localhost:3012/api-docs/
 
 ## Note
+- Create .ENV file before you use/run the application
 - Provide required (i.e DB, JWT, OAUTH and PORT) details before you run the application.
