@@ -32,7 +32,12 @@ export default class Employee {
 
     async findAll(request, response) {
         try {
-            let employees = await EmployeeDataLayer.getAllEmployees()
+            let employees = await EmployeeDataLayer.getAllEmployees({
+                user_id: request.query.user_id,
+                order: request.query.order,
+                page: request.query.page,
+                limit: request.query.limit
+            })
             //Return the response
             return response.status(httpStatus.OK).send({ status: true, data: employees })
         } catch (error) {
