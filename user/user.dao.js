@@ -1,14 +1,31 @@
 import UserModel from './user.model.js'
 import jwt from 'jsonwebtoken'
+import Sequelize from 'sequelize';
+import Utility from '../utility/utility.constant.js';
 //Extra Data access layer for User model
 //It contains DAO(i.e Data Access Object) logics
 export default class UserDataLayer {
     //Return the all users from User table
-    static async getAllUsers() {
+    static async getAllUsers(options) {
+        let whereCondition = [];
+        //Order
+        let order = await Utility.order(options);
+        //Pagination
+        let page = await Utility.pagination(options);
+        //
         return await UserModel.findAll({
+            where: {
+                [Sequelize.Op.and]: whereCondition,
+            },
+            include: [
+                { all: true, nested: false }
+            ],
             attributes: {
                 exclude: ['password', 'createdAt', 'updatedAt']
-            }
+            },
+            order: order,
+            offset: page.offset,
+            limit: page.limit,
         })
     }
     //Return particular user details by id
