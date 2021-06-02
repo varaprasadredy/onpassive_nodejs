@@ -48,7 +48,12 @@ export default class User {
             //Encrypt the password here..
             request.body.password = await Utility.generateHashPassword(request.body.password);
             //Create User
-            let userDetails = await UserModel.create(request.body)
+            let user = await UserDataLayer.getUserByEmail(request.body.email);
+            if (user) {
+                return response.status(httpStatus.CONFLICT).send({ status: false, message: "Email already exist" })
+            }
+            //Create User
+            let userDetails = await UserModel.create(request.body);
             if (userDetails) {
                 return response.status(httpStatus.OK).send({ status: true, message: "User registered successfully" })
             }
@@ -136,11 +141,15 @@ export default class User {
      */
     async findAll(request, response) {
         try {
-            let users = await UserDataLayer.getAllUsers()
+            let users = await UserDataLayer.getAllUsers({
+                order: request.query.order,
+                page: request.query.page,
+                limit: request.query.limit
+            })
             //Sort the user details by email
-            let sortedUsers = Utility.sortUsersByEmail(users)
+            // let sortedUsers = Utility.sortUsersByEmail(users)
             //Return the response
-            return response.status(httpStatus.OK).send({ status: true, data: sortedUsers })
+            return response.status(httpStatus.OK).send({ status: true, data: users })
         } catch (error) {
             response.status(httpStatus.INTERNAL_SERVER_ERROR).send({ status: false, message: error.message })
         }
