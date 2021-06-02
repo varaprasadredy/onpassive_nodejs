@@ -1,14 +1,32 @@
+import Sequelize from 'sequelize';
 import UserSchema from '../user/user.model.js'
+import Utility from '../utility/utility.constant.js';
 import EmployeeModel from './employee.model.js'
 //Extra Data access layer for Employee model
 //It contains DAO(i.e Data Access Object) logics
 export default class EmployeeDataLayer {
     //Return the all users from User table
-    static async getAllEmployees() {
+    static async getAllEmployees(options) {
+        let whereCondition = [];
+        //Order
+        let order = await Utility.order(options);
+        //Pagination
+        let page = await Utility.pagination(options);
+        //user_id
+        if (options.user_id) {
+            whereCondition.push({ user_id: options.user_id })
+        }
+        //
         return await EmployeeModel.findAll({
-            attributes: {
-                exclude: ['createdAt', 'updatedAt']
-            }
+            where: {
+                [Sequelize.Op.and]: whereCondition,
+            },
+            include: [
+                { all: true, nested: false }
+            ],
+            order: order,
+            offset: page.offset,
+            limit: page.limit,
         })
     }
     //Return particular user details by id
