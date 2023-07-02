@@ -4,7 +4,7 @@
   "description": "It is simple Users and Employee creation application.",
   "main": "index.js",
   "scripts": {
-    "start": "babel-node index.js"
+    "start": "node index.js"
   },
   "keywords": [
     "nodejs",
