@@ -37,5 +37,6 @@
     "@babel/node": "7.4.5",
     "babel-preset-env": "1.7.0"
   },
-  "type": "module"
+  "type": "module",
+  "repository": "https://github.com/varaprasadredy/onpassive_nodejs.git"
 }
